@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gato Cazador</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; background: #256087; font-family: 'Press Start 2P', cursive; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: white; }
+        .menu { text-align: center; background: #c6c6c6; padding: 40px; border: 4px solid #fff; box-shadow: 6px 6px 0px #000; color: black; line-height: 1.6; }
+        button { padding: 15px; font-size: 14px; cursor: pointer; background: #c6c6c6; border: 4px solid #fff; box-shadow: 4px 4px 0 #000; font-family: 'Press Start 2P', cursive; margin: 5px; width: 280px; }
+        button:hover { background: #e0e0e0; }
+        /* Para quien navega con teclado: se ve qué botón está seleccionado */
+        button:focus-visible { outline: 3px solid #ffd700; outline-offset: 2px; }
+        canvas { border: 4px solid #fff; background: black; display: none; max-width: 100%; height: auto; }
+        #marcador {
+            display: none; /* Se oculta por defecto, el JS lo muestra con "flex" */
+            width: 600px;
+            max-width: 100%;
+            box-sizing: border-box; /* El padding y el borde ya no ensanchan la caja */
+            margin: 10px auto; /* Centrado automático */
+            padding: 12px;
+            background: #1f1f1f;
+            color: white;
+            border: 4px solid white;
+            border-radius: 12px;
+            font-size: 12px;
+            justify-content: space-between;
+            flex-wrap: wrap; /* Si la pantalla es angosta, baja a otra fila en vez de salirse */
+            gap: 8px;
+            box-shadow: 4px 4px 0px black;
+            /* Esto ayuda a que no empuje otros elementos */
+            position: relative;
+        }
+        #logro { position: fixed; top: 20px; right: -400px; max-width: 340px; line-height: 1.4; background: #222; color: gold; padding: 15px 20px; border: 3px solid gold; border-radius: 12px; font-size: 14px; box-shadow: 4px 4px 0px black; z-index: 999; transition: right 0.5s ease; }
+    </style>
+</head>
+<body>
+
+<div id="menu-inicio" class="menu">
+    <h1>GATO CAZADOR</h1>
+
+    <!-- Color corregido: antes era #e600082c (el "2c" final lo volvía casi transparente) -->
+    <p style="font-size: 13px; color: #b30009; margin-bottom: 10px; text-shadow: 1px 1px 0px #000; font-weight: bold;">
+        AMENAZA I.A.: LVL <span id="ia-nivel">1</span>
+    </p>
+    <p style="font-size: 12px; margin-top: 0; margin-bottom: 10px;">
+        Récord: <span id="record-valor">0</span>
+    </p>
+    <p style="font-size: 10px; margin-top: 0; margin-bottom: 25px;">
+        Muévete con las flechas o WASD
+    </p>
+
+    <button onclick="empezarJuego()">Jugar</button>
+    <button onclick="abrirAjustes()">Ajustes</button>
+</div>
+
+    <div id="menu-ajustes" class="menu" style="display:none;">
+        <h2>AJUSTES</h2>
+        <button onclick="cambiarDificultad()" id="btn-dificultad">Dificultad: Fácil</button>
+        <button onclick="abrirTienda()">Tienda de Skins</button>
+        <button onclick="borrarProgreso()">Borrar progreso</button>
+        <button onclick="volverMenu()">Volver</button>
+    </div>
+<div id="menu-tienda" class="menu" style="display:none;">
+    <h2>TIENDA</h2>
+    <p>Monedas: <span id="monedas-tienda">0</span></p>
+
+    <div id="lista-tienda">
+        <!-- Nuevo: antes no había forma de volver al gato normal después de equipar otra skin -->
+        <button id="btn-gato" onclick="comprarOEquipar('🐱', 0)">Gato (gratis)</button>
+        <button id="btn-tigre" onclick="comprarOEquipar('🐯', 100)">Tigre (100 💰)</button>
+        <button id="btn-leon" onclick="comprarOEquipar('🦁', 500)">León (500 💰)</button>
+    </div>
+
+    <button onclick="volverMenu()">Volver</button>
+</div>
+
+    <canvas id="juego" width="600" height="400"></canvas>
+
+    <div id="marcador">
+        <span>Puntos: <span id="puntos-valor">0</span></span>
+        <span>Monedas: <span id="monedas-valor">0</span></span>
+        <span>Nivel: <span id="nivel-valor">1</span></span>
+        <span>Tiempo: <span id="tiempo-valor">60</span></span>
+    </div>
+
+    <div id="fin-juego" class="menu" style="display:none;">
+        <h1>¡TIEMPO AGOTADO!</h1>
+        <p>Puntuación: <span id="puntos-finales"></span></p>
+        <p>Monedas ganadas: <span id="monedas-partida">0</span></p>
+        <p>Récord: <span id="record-final">0</span></p>
+        <p id="mensaje-record" style="display:none; color: #b30009;">¡NUEVO RÉCORD!</p>
+        <button onclick="reiniciarJuego()">Volver a jugar</button>
+        <button onclick="volverMenu()">Ir al Menú</button>
+    </div>
+
+    <div id="logro"></div>
+
+    <script src="juego.js"></script>
+</body>
+</html>
